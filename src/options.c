@@ -27,7 +27,7 @@ int parsing_options(int argc, char* argv[], Options* options) {
           handle_error(
               current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C,
               optarg);
-          return ERROR_PARSE_OPTS_N;
+          return current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C;
         }
 
         if (*endptr != '\0') {
@@ -36,7 +36,7 @@ int parsing_options(int argc, char* argv[], Options* options) {
             handle_error(
                 current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C,
                 optarg);
-            return ERROR_PARSE_OPTS_N;
+            return current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C;
           }
           val = new_val;
 
@@ -44,7 +44,7 @@ int parsing_options(int argc, char* argv[], Options* options) {
             handle_error(
                 current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C,
                 optarg);
-            return ERROR_PARSE_OPTS_N;
+            return current_option == 'n' ? ERROR_PARSE_OPTS_N : ERROR_PARSE_OPTS_C;
           }
         }
 
