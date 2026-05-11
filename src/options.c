@@ -59,10 +59,12 @@ int parsing_options(int argc, char* argv[], Options* options) {
       }
       case 'q': {
         options->q = 1;
+        options->v = 0;
         break;
       }
       case 'v': {
         options->v = 1;
+        options->q = 0;
         break;
       }
       case 'z': {

@@ -17,6 +17,8 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  int exit_status = SUCCESS;
+
   if (!options.count_filenames) {
     if (options.v) {
       printf("==> standard input <==\n");
@@ -29,6 +31,7 @@ int main(int argc, char* argv[]) {
       FILE* file = fopen(options.filenames[filename_idx], "rb");
       if (file == NULL) {
         handle_error(ERROR_FILE_OPEN, options.filenames[filename_idx]);
+        exit_status = 1;
         continue;
       }
       if (filename_idx > 0 && !options.q && file != NULL) {
@@ -46,5 +49,5 @@ int main(int argc, char* argv[]) {
     free(options.filenames);
   }
 
-  return SUCCESS;
+  return exit_status;
 }

@@ -64,7 +64,11 @@ void process_stream(FILE* file, Options* options) {
 
     while ((current_line = read_line(file, delimiter)) != NULL) {
       if (full) {
-        fputs(line_queue[pos], stdout);
+        if (delimiter == '\0') {
+          fwrite(line_queue[pos], 1, strlen(line_queue[pos]) + 1, stdout);
+        } else {
+          fputs(line_queue[pos], stdout);
+        }
         free(line_queue[pos]);
       }
       line_queue[pos] = current_line;
