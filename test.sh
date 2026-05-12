@@ -8,7 +8,6 @@ MINE="mine.txt"
 
 mkdir -p $TEST_DIR
 
-# Generate test data
 for i in {1..100}; do
   echo "Line $i - some random text for testing"
 done > $TEST_DIR/large.txt
@@ -61,12 +60,10 @@ echo ""
 echo "Running tests..."
 echo ""
 
-# Default (no args = -n 10)
 run_test "$TEST_DIR/large.txt" "default on large file"
 run_test "$TEST_DIR/empty.txt" "default on empty file"
 run_test "$TEST_DIR/no_newline.txt" "default on no-newline file"
 
-# -n flag
 run_test "-n 1 $TEST_DIR/large.txt" "-n 1"
 run_test "-n 5 $TEST_DIR/large.txt" "-n 5"
 run_test "-n 100 $TEST_DIR/large.txt" "-n 100 (all lines)"
@@ -75,27 +72,23 @@ run_test "-n 0 $TEST_DIR/large.txt" "-n 0"
 run_test "--lines=5 $TEST_DIR/large.txt" "--lines=5 (long opt)"
 run_test "--lines 5 $TEST_DIR/large.txt" "--lines 5 (long opt space)"
 
-# -c flag
 run_test "-c 1 $TEST_DIR/large.txt" "-c 1"
 run_test "-c 50 $TEST_DIR/large.txt" "-c 50"
 run_test "-c 0 $TEST_DIR/large.txt" "-c 0"
 run_test "-c 999999 $TEST_DIR/large.txt" "-c more than file"
 run_test "--bytes=20 $TEST_DIR/large.txt" "--bytes=20 (long opt)"
 
-# Suffixes
 run_test "-c 1b $TEST_DIR/binary.dat" "suffix b (512 bytes)"
 run_test "-c 1K $TEST_DIR/binary.dat" "suffix K (1024 bytes)"
 run_test "-c 2K $TEST_DIR/binary.dat" "suffix 2K (2048 bytes)"
 run_test "-c 1M $TEST_DIR/empty.txt" "suffix M on empty"
 run_test "-c 1G $TEST_DIR/empty.txt" "suffix G on empty"
 
-# Negative values
 run_test "-n -5 $TEST_DIR/large.txt" "-n -5 (all but last 5)"
 run_test "-n -1 $TEST_DIR/large.txt" "-n -1 (all but last line)"
 run_test "-n -200 $TEST_DIR/large.txt" "-n -200 (more than file)"
 run_test "-c -100 $TEST_DIR/large.txt" "-c -100 (all but last 100)"
 
-# Multiple files
 run_test "$TEST_DIR/large.txt $TEST_DIR/binary.dat" "two files default"
 run_test "$TEST_DIR/large.txt $TEST_DIR/empty.txt $TEST_DIR/binary.dat" "three files"
 run_test "-q $TEST_DIR/large.txt $TEST_DIR/binary.dat" "-q quiet"
@@ -106,7 +99,6 @@ run_test "-v $TEST_DIR/large.txt" "-v single file"
 run_test "-q -v $TEST_DIR/large.txt $TEST_DIR/binary.dat" "-q -v (last wins)"
 run_test "-v -q $TEST_DIR/large.txt $TEST_DIR/binary.dat" "-v -q (last wins)"
 
-# -z zero-terminated
 run_test "-z -n 2 $TEST_DIR/zero.dat" "-z -n 2"
 run_test "-z -n 10 $TEST_DIR/zero.dat" "-z -n 10 (more than records)"
 run_test "-z -n 0 $TEST_DIR/zero.dat" "-z -n 0"
@@ -114,7 +106,6 @@ run_test "-z -c 10 $TEST_DIR/zero.dat" "-z -c 10"
 run_test "-z -n -2 $TEST_DIR/zero.dat" "-z -n -2 (negative)"
 run_test "--zero-terminated -n 2 $TEST_DIR/zero.dat" "--zero-terminated long opt"
 
-# STDIN
 echo "Hello World" | head -n 1 > $ORIG 2>/dev/null
 echo "Hello World" | $TARGET -n 1 > $MINE 2>/dev/null
 diff -q $ORIG $MINE > /dev/null 2>&1 && echo "PASS: stdin pipe" || echo "FAIL: stdin pipe"
@@ -123,19 +114,16 @@ echo "Line1\nLine2\nLine3" | head -n 2 > $ORIG 2>/dev/null
 echo "Line1\nLine2\nLine3" | $TARGET -n 2 > $MINE 2>/dev/null
 diff -q $ORIG $MINE > /dev/null 2>&1 && echo "PASS: stdin -n 2" || echo "FAIL: stdin -n 2"
 
-# Edge cases
 run_test "-n 5 -c 100 $TEST_DIR/large.txt" "both -n and -c (last wins)"
 run_test "-c 100 -n 5 $TEST_DIR/large.txt" "both -c and -n (last wins)"
 run_test "-- $TEST_DIR/large.txt" "-- separator"
 run_test "-n 2 $TEST_DIR/five_lines.txt" "-n 2 on 5-line file"
 
-# Large file
 if [ -f $TEST_DIR/2g_sparse.dat ]; then
   run_test "-c 100M $TEST_DIR/2g_sparse.dat" "100MB from 2GB sparse"
   run_test "-c -1G $TEST_DIR/2g_sparse.dat" "-c -1G from 2GB (last 1G)"
 fi
 
-# Errors
 run_fail "-x" "invalid option"
 run_fail "--unknown" "unknown long option"
 run_fail "-n" "-n without argument"
@@ -144,7 +132,6 @@ run_fail "-n abc $TEST_DIR/large.txt" "-n with non-numeric"
 run_fail "-c xyz $TEST_DIR/large.txt" "-c with non-numeric"
 run_fail "nonexistent.txt" "non-existent file"
 
-# Valgrind
 if command -v valgrind &> /dev/null; then
   for t in "-n 5 $TEST_DIR/large.txt" "-c 1K $TEST_DIR/binary.dat" \
            "-n -5 $TEST_DIR/large.txt" "-z -n 2 $TEST_DIR/zero.dat"; do
