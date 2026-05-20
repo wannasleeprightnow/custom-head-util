@@ -53,5 +53,5 @@ help:
 	@echo "  test-verbose     Run the test suite with bash -x"
 	@echo "  valgrind         Run valgrind memory check"
 	@echo "  format           Format source code with clang-format (Google style)"
-	@echo "  re              Clean and rebuild"
+	@echo "  re               Clean and rebuild"
 	@echo "  help             Show this help"
